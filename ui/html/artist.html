@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groupie-tracker</title>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+    <!-- API keys DO NOT DELETE -->
+    <!-- AIzaSyCSyJITvVb53uMvnnG2mxvg4iACXsbltdQ -->
+
+
+</head>
+
+<body>
+<nav>
+    <div class="nav">
+        <a class="navbar-brand" href="/">
+            <h1>GROUPIE-TRACKER</h1>
+        </a>
+    </div>
+</nav>
+
+<main class="about">
+    <div class="center">
+        <img src="{{.Image}}" alt="{{.Name}}">
+    </div>
+    <h1 class="center">{{.Name}}</h1>
+    <h3 class="center">Name: {{.Name}}</h3>
+    <h3 class="center">Members:</h3>
+    <div class="center">
+        <ul class="members">
+            {{range .Members}}
+            <li>{{.}}</li>
+            {{end}}
+        </ul>
+    </div>
+
+    <h3 class="center">Date of creation: {{.CreationDate}}</h3>
+    <h3 class="center">First Album: {{.FirstAlbum}}</h3>
+    <h3 class="center">Location:</h3>
+    <ul class="members">
+        {{range $location, $date := .DatesLocations}}
+        <div class="loc">
+            <h4>{{$location}}: </h4>
+            <li>{{range $date}}</li>
+            <h6 class="list-item">{{.}}</h6>
+            {{end}}
+        </div>
+        {{end}}
+    </ul>
+
+    <!-- geolocalization -->
+    <div id="googleMap" style="width:60%; height:700px;margin: 40px 20%;"></div>
+
+    <script>
+        let loc = document.getElementsByClassName('loc');
+        let arr = []
+        for (key of loc) {
+            arr.push(key.innerHTML.replace(/[^\w\s]|_/g," "));
+        }
+        var map
+        function myMap() {
+            var geocoder = new google.maps.Geocoder();
+
+            var latlng = new google.maps.LatLng(51.508742,-0.120850);
+            var mapOptions = {
+                zoom: 2,
+                center: latlng
+            }
+            map = new google.maps.Map(document.getElementById('googleMap'), mapOptions);
+            for (key of arr) {
+                geocoder.geocode( { 'address': key}, function(results, status){
+                    if (status == 'OK') {
+                        map.setCenter(results[0].geometry.location);
+                        let marker = new google.maps.Marker( {
+                            map: map,
+                            animation:google.maps.Animation.BOUNCE,
+                            position: results[0].geometry.location
+                        });
+                        const infowindow = new google.maps.InfoWindow({
+                            content: "<p>Marker Location:" + marker.getPosition() + "</p>",
+                        });
+                        google.maps.event.addListener(marker, "click", () => {
+                            infowindow.open(map, marker);
+                        });
+                        google.maps.event.addListener(marker,'click',function() {
+                            var pos = map.getZoom();
+                            map.setZoom(9);
+                            map.setCenter(marker.getPosition());
+                            window.setTimeout(function() {map.setZoom(pos);},3000);
+                        })
+                    } else {
+                        console.log("Don't work because:" + status)
+                    }
+                })
+            }
+        }
+    </script>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDZ65aafPZP_EQ6292Zb-5_GvZsKG_RE68&callback=myMap"></script>
+
+
+    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+    <a class="center" href="/">
+        <button>GO BACK</button>
+    </a>
+</main>
+
+<footer>
+    <p>Authors: kkanat || smasguto</p>
+</footer>
+
+</body>
+</html>

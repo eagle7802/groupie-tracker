@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Groupie-tracker</title>
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/static/styles.css">
+</head>
+
+<body>
+<nav>
+    <div class="nav">
+        <a class="navbar-brand" href="/">
+            <h1>GROUPIE-TRACKER</h1>
+        </a>
+        <!-- SearchBar -->
+        <div class="fullscreenSearch">
+            <button class="openBtn" onclick="openSearch()">
+                <img class="imgBtn" src="img/search.png" alt="Search" />
+            </button>
+        </div>
+        <!-- SearchBar Done -->
+    </div>
+</nav>
+
+<main>
+    <div id="myOverlay" class="overlay">
+        <span class="closebtn" onclick="closeSearch()" title="Close Overlay">×</span>
+        <div class="overlay-content">
+            <form action="/" method="POST">
+                <input type="text" placeholder="Search.." name="search" id="searchInput" list="datalistOptions">
+                <datalist id="datalistOptions">
+                    {{range $option , $tag := .Datalist}}
+                    <option value="{{$option}}{{$tag}}"></option>
+                    {{end}}
+                </datalist>
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+
+    {{if .Artists}}
+    <div class="main">
+        <ul>
+            {{range $index ,$artist := .Artists}}
+            <li>
+                <a class="center" href="/artist/{{$artist.ID}}">
+                    <div class="container">
+                        <h1>{{.Name}}</h1>
+                        <div class="center">
+                            <img src="{{.Image}}" alt="{{.Name}}">
+                        </div>
+                    </div>
+                </a>
+            </li>
+            {{end}}
+            {{else}}
+            <div class="message-container">
+                <h1><p>No artists found.</p></h1>
+            </div>
+            {{end}}
+        </ul>
+    </div>
+</main>
+
+<footer>
+    <p>Authors:kkanat || smasguto</p>
+</footer>
+<script src="/static/script.js"></script>
+</body>
+</html>
